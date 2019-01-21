@@ -149,3 +149,90 @@ const actors = [{
 console.log(bars);
 console.log(events);
 console.log(actors);
+
+//step1
+for(var i = 0; i<events.length; i++){
+  for(var j = 0; j < bars.length; j++){
+    if(events[i].barId == bars[j].id)
+    {
+        events[i].price = events[i].time * bars[j].pricePerHour + events[i].persons * bars[j].pricePerPerson;
+    }
+  }
+}
+
+//step 2
+for(i in events){
+  for(j in bars){
+    if(events[i].barId==bars[j].id){
+      if(events[i].persons>=10 && events[i].persons<20){
+        var pricePerPerson = bars[j].pricePerPerson*0.9
+        events[i].price = events[i].time * bars[j].pricePerHour + events[i].persons * pricePerPerson;
+      }else if(events[i].persons>=20 && events[i].persons<60){
+        var pricePerPerson = bars[j].pricePerPerson*0.7
+        events[i].price = events[i].time * bars[j].pricePerHour + events[i].persons * pricePerPerson;
+      }else if(events[i].persons>=60){
+        var pricePerPerson = bars[j].pricePerPerson*0.5
+        events[i].price = events[i].time * bars[j].pricePerHour + events[i].persons * pricePerPerson;
+      }else{
+        var pricePerPerson = bars[j].pricePerPerson
+        events[i].price = events[i].time * bars[j].pricePerHour + events[i].persons * pricePerPerson;
+      }
+    }
+  }
+}
+
+
+//step 3
+for(var i = 0; i<events.length; i++)
+{
+    for(var j = 0; j < bars.length; j++)
+    {
+        if(events[i].barId == bars[j].id)
+        {
+          var commission = events[i].price.price * 0.3
+          events[i].commission.insurance = commission*0.5;
+          events[i].commission.treasury = events[i].persons * 1;
+          events[i].commission.privateaser = commission-insurance-treasury;
+        }
+    }
+}
+
+//step 4 
+for(var i = 0; i<events.length; i++){
+    for(var j = 0; j < bars.length; j++){
+        if(events[i].barId == bars[j].id){
+            if (events[i].options.deductibleReduction == true){
+              events[i].price = events[i].price + 200;
+              events[i].commission.privateaser += events[i].persons * 1;
+            }
+            else events[i].price += 5000;
+        }
+    }
+}
+
+
+//step5
+for(var i = 0; i<actors.length; i++){
+    for(var j = 0; j < events.length; j++){
+        if(actors[i].eventId == events[j].id){
+            for (var k = 0; k < actors[i].payment.length; k++){
+                if (actors[i].payment[k].who == 'booker'){
+                    actors[i].payment[k].amount = events[j].price + events[i].persons * 1;;
+                }
+                else if (actors[i].payment[k].who == 'bar'){
+                    actors[i].payment[k].amount = events[j].price * 0.7;
+                }
+                else if (actors[i].payment[k].who == 'insurance'){
+                    actors[i].payment[k].amount = events[j].commission.insurance;
+                }
+                else if (actors[i].payment[k].who == 'treasury'){
+                    actors[i].payment[k].amount = events[j].commission.treasury;
+                }
+                else if (actors[i].payment[k].who == 'privateaser'){
+                    actors[i].payment[k].amount = events[j].commission.privateaser + events[i].persons * 1;
+                }
+            }
+        }
+    }
+}
+
